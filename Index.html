@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quest Employment · Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1f2533;
+    --border2: #2a3145;
+    --accent: #00e5a0;
+    --accent2: #0066ff;
+    --accent3: #ff5e3a;
+    --text: #e8eaf0;
+    --text2: #7a8299;
+    --text3: #4a5068;
+    --card-glow: rgba(0,229,160,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .upload-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 18px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .upload-btn:hover { background: rgba(0,229,160,0.08); box-shadow: 0 0 16px rgba(0,229,160,0.2); }
+  .upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+
+  .upload-name {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text2);
+    max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .upload-error { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent3); }
+
+  /* ── Layout ── */
+  .app { position: relative; z-index: 1; padding: 32px; max-width: 1600px; margin: 0 auto; }
+
+  /* ── State screens ── */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: calc(100vh - 60px);
+    text-align: center;
+  }
+  .empty-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 2px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin-bottom: 24px;
+    color: var(--text3);
+    background: var(--surface);
+  }
+  .empty-state h2 { font-size: 22px; font-weight: 700; color: var(--text2); margin-bottom: 8px; }
+  .empty-state p { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text3); line-height: 1.8; max-width: 420px; }
+  .empty-state .csv-hint {
+    margin-top: 24px; padding: 16px 24px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3);
+    text-align: left; line-height: 2;
+  }
+  .empty-state .csv-hint strong { color: var(--accent); font-weight: 500; }
+
+  /* ── Filters bar ── */
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+    margin-bottom: 28px;
+  }
+  .filter-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+  select, .search-input {
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--text); font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 7px 14px; border-radius: 4px; outline: none;
+    transition: border-color 0.2s;
+    appearance: none; cursor: pointer;
+  }
+  select:focus, .search-input:focus { border-color: var(--accent); }
+  .search-input { min-width: 200px; }
+  .filter-sep { width: 1px; height: 20px; background: var(--border); }
+
+  /* ── KPI Cards ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+  }
+  .kpi-card:hover { border-color: var(--border2); box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+  .kpi-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .kpi-value { font-size: 32px; font-weight: 800; color: var(--text); line-height: 1; }
+  .kpi-value.accent { color: var(--accent); }
+  .kpi-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); margin-top: 6px; }
+
+  /* ── Chart grid ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  @media(max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .chart-card.full { grid-column: 1 / -1; }
+  .chart-card:hover { border-color: var(--border2); }
+  .chart-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chart-title::before { content: ''; width: 3px; height: 12px; background: var(--accent); border-radius: 2px; }
+  .chart-wrap { position: relative; height: 240px; }
+
+  /* ── Table ── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .table-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .table-title { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text2); }
+  .table-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text3); padding: 10px 24px; text-align: left;
+    border-bottom: 1px solid var(--border); background: var(--surface2);
+    position: sticky; top: 60px;
+  }
+  tbody tr { transition: background 0.15s; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+  tbody td { font-family: 'DM Mono', monospace; font-size: 12px; padding: 10px 24px; color: var(--text2); }
+  tbody td.bold { color: var(--text); font-weight: 500; }
+  tbody td.accent { color: var(--accent); }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 3px;
+    font-size: 10px; letter-spacing: 0.06em; font-weight: 500;
+  }
+  .badge.new { background: rgba(0,229,160,0.12); color: var(--accent); border: 1px solid rgba(0,229,160,0.25); }
+  .badge.existing { background: rgba(122,130,153,0.1); color: var(--text3); border: 1px solid var(--border); }
+
+  /* scrollable table body */
+  .table-scroll { max-height: 380px; overflow-y: auto; }
+  .table-scroll::-webkit-scrollbar { width: 4px; }
+  .table-scroll::-webkit-scrollbar-track { background: var(--surface); }
+  .table-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* ── Utility ── */
+  .hidden { display: none !important; }
+  .fade-in { animation: fadeIn 0.4s ease both; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Quest Employment
+  </div>
+  <div class="header-right">
+    <span class="upload-name" id="uploadName"></span>
+    <span class="upload-error" id="uploadError"></span>
+    <label class="upload-btn">
+      ↑ Upload CSV
+      <input type="file" accept=".csv" id="csvInput"/>
+    </label>
+  </div>
+</header>
+
+<!-- ── App body ── -->
+<div class="app">
+
+  <!-- Empty state -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">⬆</div>
+    <h2>No data loaded</h2>
+    <p>Upload a CSV file to see your workforce analytics dashboard.</p>
+    <div class="csv-hint">
+      <strong>Expected columns:</strong><br/>
+      Client · Consultant · Metric · Value<br/>
+      New_Client (Yes/No) · Week · Month_Num
+    </div>
+  </div>
+
+  <!-- Dashboard (hidden until data loaded) -->
+  <div id="dashboard" class="hidden">
+
+    <!-- Filters -->
+    <div class="filters fade-in">
+      <span class="filter-label">Filter</span>
+      <select id="filterConsultant"><option value="All">All Consultants</option></select>
+      <select id="filterPeriod"><option value="All">All Periods</option></select>
+      <select id="filterMetric"><option value="All">All Metrics</option></select>
+      <div class="filter-sep"></div>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search client…"/>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid fade-in" id="kpiGrid">
+      <div class="kpi-card" style="--card-accent: var(--accent)">
+        <div class="kpi-label">Total Value</div>
+        <div class="kpi-value accent" id="kpiTotal">—</div>
+        <div class="kpi-sub" id="kpiTotalSub"></div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent2)">
+        <div class="kpi-label">Unique Clients</div>
+        <div class="kpi-value" id="kpiClients">—</div>
+        <div class="kpi-sub" id="kpiClientsSub"></div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent)">
+        <div class="kpi-label">New Clients</div>
+        <div class="kpi-value" id="kpiNew">—</div>
+        <div class="kpi-sub">flagged as new</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent3)">
+        <div class="kpi-label">Consultants</div>
+        <div class="kpi-value" id="kpiConsultants">—</div>
+        <div class="kpi-sub" id="kpiConsultantsSub"></div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent2)">
+        <div class="kpi-label">Data Points</div>
+        <div class="kpi-value" id="kpiRows">—</div>
+        <div class="kpi-sub" id="kpiRowsSub"></div>
+      </div>
+    </div>
+
+    <!-- Charts row 1 -->
+    <div class="chart-grid fade-in">
+      <div class="chart-card">
+        <div class="chart-title">Value by Metric</div>
+        <div class="chart-wrap"><canvas id="chartMetric"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Top Clients by Value</div>
+        <div class="chart-wrap"><canvas id="chartClient"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Value by Consultant</div>
+        <div class="chart-wrap"><canvas id="chartConsultant"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Trend by Week</div>
+        <div class="chart-wrap"><canvas id="chartWeek"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card fade-in">
+      <div class="table-header">
+        <span class="table-title">Row Detail</span>
+        <span class="table-count" id="tableCount"></span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Consultant</th>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Week</th>
+              <th>Month</th>
+              <th>New Client</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /dashboard -->
+</div><!-- /app -->
+
+<script>
+// ── State ──────────────────────────────────────────────
+let sourceRows = [];
+let charts = {};
+
+// ── CSV Helpers ────────────────────────────────────────
+const getCI = (obj, ...names) => {
+  const keys = Object.keys(obj || {});
+  for (const name of names) {
+    const target = String(name).toLowerCase();
+    const k = keys.find(x => x.toLowerCase() === target);
+    if (k !== undefined) return obj[k];
+  }
+  return "";
+};
+const parseWeek = x => { const m = String(x??'').trim().match(/(\d+)/); return m ? Number(m[1])||0 : 0; };
+const toNum = x => { const n = Number(String(x??'').replace(/[£,]/g,'').trim()); return Number.isFinite(n)?n:0; };
+const fmtNum = n => n % 1 === 0 ? n.toLocaleString() : n.toLocaleString(undefined,{maximumFractionDigits:2});
+
+// ── CSV Upload ─────────────────────────────────────────
+document.getElementById('csvInput').addEventListener('change', e => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  setError(''); setUploadName(file.name);
+
+  Papa.parse(file, {
+    header: true, skipEmptyLines: true,
+    complete: ({errors, data}) => {
+      if (errors?.length) { setError(errors[0].message || 'CSV parse error'); return; }
+      const rows = (Array.isArray(data) ? data : []).map(r => ({
+        client:     String(getCI(r,'client')).trim(),
+        consultant: String(getCI(r,'consultant')||'Unknown').trim()||'Unknown',
+        newClient:  String(getCI(r,'new_client','new client')||'No').trim()||'No',
+        metric:     String(getCI(r,'metric')).trim(),
+        value:      toNum(getCI(r,'value')),
+        week:       parseWeek(getCI(r,'week','week_label','week label')),
+        month:      Number(getCI(r,'month_num','month'))||0,
+      })).filter(x => x.client && x.metric);
+
+      if (!rows.length) {
+        setError('No usable rows found. Check column names (Client, Consultant, Metric, Value…).');
+        return;
+      }
+      sourceRows = rows;
+      initFilters();
+      render();
+      document.getElementById('emptyState').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+    }
+  });
+  e.target.value = '';
+});
+
+function setError(msg) { document.getElementById('uploadError').textContent = msg; }
+function setUploadName(n) { document.getElementById('uploadName').textContent = n; }
+
+// ── Filters ────────────────────────────────────────────
+function initFilters() {
+  const consultants = [...new Set(sourceRows.map(r=>r.consultant))].sort();
+  const metrics = [...new Set(sourceRows.map(r=>r.metric))].sort();
+  const weeks = [...new Set(sourceRows.map(r=>r.week).filter(Boolean))].sort((a,b)=>a-b);
+
+  populateSelect('filterConsultant', ['All', ...consultants], 'All', v => v==='All'?'All Consultants':`${v}`);
+  populateSelect('filterMetric', ['All',...metrics], 'All', v => v==='All'?'All Metrics':v);
+
+  const periodSel = document.getElementById('filterPeriod');
+  periodSel.innerHTML = '<option value="All">All Periods</option>';
+  weeks.forEach(w => { const o = document.createElement('option'); o.value = w; o.textContent = `Week ${w}`; periodSel.appendChild(o); });
+
+  ['filterConsultant','filterPeriod','filterMetric','searchInput'].forEach(id => {
+    document.getElementById(id).addEventListener('change', render);
+    if(id==='searchInput') document.getElementById(id).addEventListener('input', render);
+  });
+}
+
+function populateSelect(id, values, defaultVal, label) {
+  const sel = document.getElementById(id);
+  sel.innerHTML = '';
+  values.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = label(v); sel.appendChild(o);
+  });
+  sel.value = defaultVal;
+}
+
+function getFilteredRows() {
+  const consultant = document.getElementById('filterConsultant')?.value || 'All';
+  const period     = document.getElementById('filterPeriod')?.value || 'All';
+  const metric     = document.getElementById('filterMetric')?.value || 'All';
+  const search     = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  return sourceRows.filter(r =>
+    (consultant==='All' || r.consultant===consultant) &&
+    (period==='All' || String(r.week)===String(period)) &&
+    (metric==='All' || r.metric===metric) &&
+    (!search || r.client.toLowerCase().includes(search))
+  );
+}
+
+// ── Render ─────────────────────────────────────────────
+function render() {
+  const rows = getFilteredRows();
+  renderKPIs(rows);
+  renderCharts(rows);
+  renderTable(rows);
+}
+
+function renderKPIs(rows) {
+  const total = rows.reduce((s,r)=>s+r.value,0);
+  const clients = new Set(rows.map(r=>r.client)).size;
+  const newClients = new Set(rows.filter(r=>r.newClient.toLowerCase()==='yes').map(r=>r.client)).size;
+  const consultants = new Set(rows.map(r=>r.consultant)).size;
+  const metrics = new Set(rows.map(r=>r.metric)).size;
+
+  document.getElementById('kpiTotal').textContent = fmtNum(total);
+  document.getElementById('kpiTotalSub').textContent = `across ${metrics} metric${metrics!==1?'s':''}`;
+  document.getElementById('kpiClients').textContent = clients;
+  document.getElementById('kpiClientsSub').textContent = `${newClients} new`;
+  document.getElementById('kpiNew').textContent = newClients;
+  document.getElementById('kpiConsultants').textContent = consultants;
+  document.getElementById('kpiConsultantsSub').textContent = `active`;
+  document.getElementById('kpiRows').textContent = fmtNum(rows.length);
+  document.getElementById('kpiRowsSub').textContent = `total rows`;
+}
+
+// Chart colours
+const COLORS = ['#00e5a0','#0066ff','#ff5e3a','#f0c040','#a855f7','#22d3ee','#fb923c','#34d399'];
+const chartDefaults = {
+  plugins: { legend: { display: false }, tooltip: {
+    backgroundColor:'#111318', borderColor:'#1f2533', borderWidth:1,
+    titleColor:'#7a8299', bodyColor:'#e8eaf0',
+    titleFont:{family:'DM Mono, monospace',size:10},
+    bodyFont:{family:'DM Mono, monospace',size:12},
+  }},
+  scales: {
+    x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#4a5068',font:{family:'DM Mono, monospace',size:10}}, border:{color:'#1f2533'} },
+    y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#4a5068',font:{family:'DM Mono, monospace',size:10}}, border:{color:'#1f2533'} }
+  },
+  animation: { duration: 400 },
+  responsive: true, maintainAspectRatio: false,
+};
+
+function sumBy(rows, key) {
+  const map = {};
+  rows.forEach(r => { map[r[key]] = (map[r[key]]||0) + r.value; });
+  return Object.entries(map).sort((a,b)=>b[1]-a[1]);
+}
+
+function mkChart(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, cfg);
+}
+
+function renderCharts(rows) {
+  // Metric bar
+  const byMetric = sumBy(rows,'metric');
+  mkChart('chartMetric', {
+    type:'bar',
+    data: {
+      labels: byMetric.map(x=>x[0]),
+      datasets:[{data: byMetric.map(x=>x[1]), backgroundColor: COLORS, borderRadius:4, borderSkipped:false}]
+    },
+    options: {...chartDefaults}
+  });
+
+  // Top clients horizontal bar
+  const byClient = sumBy(rows,'client').slice(0,10).reverse();
+  mkChart('chartClient', {
+    type:'bar',
+    data:{
+      labels: byClient.map(x=>x[0]),
+      datasets:[{data:byClient.map(x=>x[1]), backgroundColor:'#0066ff', borderRadius:4, borderSkipped:false}]
+    },
+    options:{...chartDefaults, indexAxis:'y'}
+  });
+
+  // Consultant bar
+  const byConsultant = sumBy(rows,'consultant');
+  mkChart('chartConsultant', {
+    type:'bar',
+    data:{
+      labels: byConsultant.map(x=>x[0]),
+      datasets:[{data:byConsultant.map(x=>x[1]), backgroundColor:'#a855f7', borderRadius:4, borderSkipped:false}]
+    },
+    options:{...chartDefaults}
+  });
+
+  // Week trend line
+  const byWeek = {};
+  rows.filter(r=>r.week).forEach(r=>{ byWeek[r.week]=(byWeek[r.week]||0)+r.value; });
+  const weekKeys = Object.keys(byWeek).map(Number).sort((a,b)=>a-b);
+  mkChart('chartWeek',{
+    type:'line',
+    data:{
+      labels: weekKeys.map(w=>`Wk ${w}`),
+      datasets:[{
+        data: weekKeys.map(w=>byWeek[w]),
+        borderColor:'#00e5a0', backgroundColor:'rgba(0,229,160,0.08)',
+        tension:0.4, fill:true, pointBackgroundColor:'#00e5a0', pointRadius:3,
+      }]
+    },
+    options:{...chartDefaults}
+  });
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('tableCount').textContent = `${rows.length.toLocaleString()} rows`;
+  const display = rows.slice(0,300);
+  tbody.innerHTML = display.map(r=>`
+    <tr>
+      <td class="bold">${esc(r.client)}</td>
+      <td>${esc(r.consultant)}</td>
+      <td>${esc(r.metric)}</td>
+      <td class="accent">${fmtNum(r.value)}</td>
+      <td>${r.week||'—'}</td>
+      <td>${r.month||'—'}</td>
+      <td><span class="badge ${r.newClient.toLowerCase()==='yes'?'new':'existing'}">${esc(r.newClient)}</span></td>
+    </tr>`).join('');
+  if(rows.length>300) {
+    tbody.innerHTML += `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px;font-family:'DM Mono',monospace;font-size:11px;">… and ${(rows.length-300).toLocaleString()} more rows</td></tr>`;
+  }
+}
+
+function esc(s){ const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; }
+</script>
+</body>
+</html>
