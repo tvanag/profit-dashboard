@@ -732,22 +732,11 @@ function renderDonut(rows) {
   });
 }
 
-// Seed demo data so the layout is visible on load
-(function seedDemo() {
-  sourceRows = [
-    {client:'Bedfordshire Growers Ltd', consultant:'Alice',  newClient:'No',  metric:'Gross Margin', value:8200, week:41, month:10},
-    {client:'Dunbia (UK)',              consultant:'Alice',  newClient:'No',  metric:'Gross Margin', value:5800, week:41, month:10},
-    {client:'Ascendia UK Ltd',          consultant:'Bob',    newClient:'Yes', metric:'Gross Margin', value:3400, week:41, month:10},
-    {client:'Guidant Global UK Ltd',    consultant:'Bob',    newClient:'No',  metric:'Gross Margin', value:320,  week:41, month:10},
-    {client:'Viovet',                   consultant:'Carol',  newClient:'No',  metric:'Gross Margin', value:290,  week:41, month:10},
-    {client:'Movianto UK Ltd',          consultant:'Carol',  newClient:'No',  metric:'Gross Margin', value:-4100,week:41, month:10},
-    {client:'Dunbia (UK)',              consultant:'Alice',  newClient:'No',  metric:'SSP',         value:-210, week:41, month:10},
-    {client:'Ascendia UK Ltd',          consultant:'Bob',    newClient:'Yes', metric:'SMP',         value:-450, week:41, month:10},
-    {client:'Bedfordshire Growers Ltd', consultant:'Alice',  newClient:'No',  metric:'Holiday',     value:-1500,week:41, month:10},
-    {client:'Movianto UK Ltd',          consultant:'Carol',  newClient:'No',  metric:'Pension',     value:-800, week:41, month:10},
-  ];
-  render();
-})();
+// No data until CSV is uploaded — show placeholder KPIs
+document.getElementById('kpiGross').textContent = '—';
+document.getElementById('kpiSSP').textContent   = '—';
+document.getElementById('kpiSMP').textContent   = '—';
+document.getElementById('kpiNet').textContent   = '—';
 </script>
 </body>
 </html>
