@@ -475,6 +475,39 @@ body {
 
   </div>
 
+  <!-- Costs Chart Row -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;margin-top:16px;">
+
+    <!-- Left: Cost by Client stacked bar -->
+    <div class="chart-card fade" style="animation-delay:0.28s;">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Cost Breakdown by Client</div>
+        <div class="chart-view-label">SSP + SMP + Holiday + Pension + Other</div>
+      </div>
+      <div id="costsEmpty" class="empty-overlay">
+        <span>💸</span>Upload a CSV to see cost breakdown
+      </div>
+      <div id="costsChartWrap" class="hidden" style="position:relative;height:260px;">
+        <canvas id="chartCosts"></canvas>
+      </div>
+    </div>
+
+    <!-- Right: Cost by Consultant donut -->
+    <div class="chart-card fade" style="animation-delay:0.32s;">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Cost by Consultant</div>
+      </div>
+      <div id="costConsultantEmpty" class="empty-overlay">
+        <span>👤</span>No data yet
+      </div>
+      <div id="costConsultantWrap" class="hidden">
+        <div style="position:relative;height:200px;"><canvas id="chartCostConsultant"></canvas></div>
+        <div id="costConsultantLegend" style="margin-top:14px;"></div>
+      </div>
+    </div>
+
+  </div>
+
   <!-- Client Detail Table -->
   <div class="table-card fade" style="animation-delay:0.3s; margin-top:16px;">
     <div id="tableEmpty" class="empty-overlay">
@@ -487,8 +520,8 @@ body {
             <th>Client / Owner</th>
             <th>Total Margin</th>
             <th>Margin/Hr</th>
-            <th>Margin Erosion</th>
-            <th id="trendColHead">Trend</th>
+            <th>Costs</th>
+            <th>Trend</th>
           </tr>
         </thead>
         <tbody id="clientTableBody"></tbody>
@@ -600,13 +633,12 @@ function render() {
   renderKPIs(rows);
   renderBarChart(rows);
   renderDonut(rows);
+  renderCostsChart(rows);
+  renderCostConsultantChart(rows);
   renderTable(rows);
 
   const period = document.getElementById('filterPeriod')?.value;
   document.getElementById('viewLabel').textContent = period && period !== 'All' ? `View: Week ${period}` : 'View: Weekly';
-  // Update trend column heading with latest week label
-  const weeks = [...new Set(sourceRows.map(r=>r.week).filter(Boolean))].sort((a,b)=>b-a);
-  if (weeks.length) document.getElementById('trendColHead').textContent = `W${weeks[0]} Trend`;
 }
 
 // KPIs — map metrics by name
@@ -789,6 +821,173 @@ function renderDonut(rows) {
   });
 }
 
+let costsChart, costConsultantChart;
+
+function renderCostsChart(rows) {
+  if (!rows.length) {
+    document.getElementById('costsEmpty').classList.remove('hidden');
+    document.getElementById('costsChartWrap').classList.add('hidden');
+    return;
+  }
+
+  // Identify cost rows: negative values or known cost metric names
+  const COST_KEYWORDS = ['holiday','ssp','smp','pension','pens','spp','internal','erosion','leakage','cost','deduction'];
+  const costRows = rows.filter(r =>
+    r.value < 0 || COST_KEYWORDS.some(k => r.metric.toLowerCase().includes(k))
+  );
+
+  if (!costRows.length) {
+    document.getElementById('costsEmpty').classList.remove('hidden');
+    document.getElementById('costsChartWrap').classList.add('hidden');
+    return;
+  }
+
+  // Group costs by metric type, stacked per client (top 8 by total cost)
+  const clientCosts = {};
+  costRows.forEach(r => {
+    if (!clientCosts[r.client]) clientCosts[r.client] = {};
+    clientCosts[r.client][r.metric] = (clientCosts[r.client][r.metric] || 0) + Math.abs(r.value);
+  });
+
+  const top8 = Object.entries(clientCosts)
+    .map(([c, m]) => [c, Object.values(m).reduce((s,v)=>s+v,0)])
+    .sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]);
+
+  const allMetrics = [...new Set(costRows.map(r=>r.metric))];
+  const COST_COLORS = ['#e84c4c','#f0a830','#4a90e2','#a855f7','#2ecc8f','#22d3ee','#fb923c','#f472b6'];
+
+  const datasets = allMetrics.map((metric, i) => ({
+    label: metric,
+    data: top8.map(client => clientCosts[client]?.[metric] || 0),
+    backgroundColor: COST_COLORS[i % COST_COLORS.length],
+    borderRadius: 3,
+    borderSkipped: false,
+    stack: 'costs',
+  }));
+
+  document.getElementById('costsEmpty').classList.add('hidden');
+  document.getElementById('costsChartWrap').classList.remove('hidden');
+
+  if (costsChart) costsChart.destroy();
+  costsChart = new Chart(document.getElementById('chartCosts').getContext('2d'), {
+    type: 'bar',
+    data: { labels: top8, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true, position: 'top', align: 'end',
+          labels: {
+            color: '#6b7a99', font: { family:'Plus Jakarta Sans', size:11 },
+            boxWidth: 10, boxHeight: 10, borderRadius: 3, padding: 12,
+          }
+        },
+        tooltip: {
+          backgroundColor: '#fff', borderColor: '#e8ecf1', borderWidth: 1,
+          titleColor: '#6b7a99', bodyColor: '#1a2035',
+          titleFont: { family:'Plus Jakarta Sans', size:11 },
+          bodyFont: { family:'Plus Jakarta Sans', size:12, weight:'600' },
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: £${ctx.parsed.y.toLocaleString('en-GB',{minimumFractionDigits:2})}` }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { color: '#6b7a99', font: { family:'Plus Jakarta Sans', size:11 }, maxRotation: 20 },
+          border: { color: '#e8ecf1' },
+        },
+        y: {
+          stacked: true,
+          grid: { color: '#f0f2f5' },
+          ticks: { color: '#9ba5bb', font: { family:'Plus Jakarta Sans', size:11 },
+            callback: v => '£' + Number(v).toLocaleString() },
+          border: { color: '#e8ecf1' },
+        }
+      }
+    }
+  });
+}
+
+function renderCostConsultantChart(rows) {
+  const show = v => {
+    document.getElementById('costConsultantEmpty').classList.toggle('hidden', v);
+    document.getElementById('costConsultantWrap').classList.toggle('hidden', !v);
+  };
+
+  const COST_KEYWORDS = ['holiday','ssp','smp','pension','pens','spp','internal','erosion','leakage','cost','deduction'];
+  const costRows = rows.filter(r =>
+    r.value < 0 || COST_KEYWORDS.some(k => r.metric.toLowerCase().includes(k))
+  );
+
+  if (!costRows.length) { show(false); return; }
+  show(true);
+
+  // Sum costs per consultant
+  const consultantCosts = {};
+  costRows.forEach(r => {
+    consultantCosts[r.consultant] = (consultantCosts[r.consultant] || 0) + Math.abs(r.value);
+  });
+
+  const sorted = Object.entries(consultantCosts).sort((a,b) => b[1]-a[1]);
+  const labels = sorted.map(x => x[0]);
+  const values = sorted.map(x => x[1]);
+  const COLORS = ['#4a90e2','#2ecc8f','#f0a830','#e84c4c','#a855f7','#22d3ee','#fb923c','#34d399'];
+  const colors = COLORS.slice(0, labels.length);
+
+  const total = values.reduce((s,v)=>s+v,0);
+
+  if (costConsultantChart) costConsultantChart.destroy();
+  costConsultantChart = new Chart(document.getElementById('chartCostConsultant').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderWidth: 3,
+        borderColor: '#fff',
+        hoverBorderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#fff', borderColor: '#e8ecf1', borderWidth: 1,
+          titleColor: '#6b7a99', bodyColor: '#1a2035',
+          callbacks: {
+            label: ctx => {
+              const pct = total > 0 ? ((ctx.parsed / total)*100).toFixed(1) : 0;
+              return ` £${ctx.parsed.toLocaleString('en-GB',{minimumFractionDigits:2})} (${pct}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Custom legend with £ value + %
+  const legendEl = document.getElementById('costConsultantLegend');
+  legendEl.innerHTML = sorted.map(([name, val], i) => {
+    const pct = total > 0 ? ((val/total)*100).toFixed(1) : 0;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f0f2f5;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:10px;height:10px;border-radius:3px;background:${colors[i]};flex-shrink:0;"></div>
+        <span style="color:#1a2035;font-weight:600;">${esc(name)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="color:#6b7a99;">£${val.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+        <span style="color:#9ba5bb;min-width:36px;text-align:right;">${pct}%</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderTable(rows) {
   if (!rows.length) {
     document.getElementById('tableEmpty').classList.remove('hidden');
@@ -848,7 +1047,7 @@ function renderTable(rows) {
       ? `<span class="trend-badge drop">↓ Dropping</span>`
       : `<span style="color:var(--text3);font-size:12px">—</span>`;
 
-    const erosionHTML = d.erosion > 0
+    const costsHTML = d.erosion > 0
       ? `<span class="td-erosion">-£${d.erosion.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`
       : `<span class="td-erosion zero">-£0.00</span>`;
 
@@ -863,7 +1062,7 @@ function renderTable(rows) {
       </td>
       <td><span class="td-margin">£${d.totalMargin.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></td>
       <td>${marginHrDisplay}</td>
-      <td>${erosionHTML}</td>
+      <td>${costsHTML}</td>
       <td>${trendHTML}</td>
     </tr>`;
   }).join('');
