@@ -1,0 +1,349 @@
+﻿Client,Consultant,New_Client,Week,Month_Num,Metric,Cost_Type,Value,Prev_Week_Value,WoW_Change,WoW_Pct,WoW_Trend,Running_Total,Week_Sort,Is_Latest_Week
+Alfa,Andy,,Week 41,1,Hours,Income,940.92,0,0,,No Change,940.92,1,No
+Alfa,Andy,,Week 41,1,Holiday,Expense,-722.34,0,0,,No Change,-722.34,1,No
+Alfa,Andy,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Alfa,Andy,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Alfa,Andy,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Alfa,Andy,,Week 41,1,Margin,Income,2763.74,0,0,,No Change,2763.74,1,No
+Alfa,Andy,,Week 42,1,Hours,Income,925.86,940.92,-15.06,-0.016005612,Dropping,1866.78,2,No
+Alfa,Andy,,Week 42,1,Holiday,Expense,-1248.27,-722.34,-525.93,-0.728092034,Increasing Cost,-1970.61,2,No
+Alfa,Andy,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Alfa,Andy,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Alfa,Andy,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Alfa,Andy,,Week 42,1,Margin,Income,3481.7,2763.74,717.96,0.259778416,Improvement,6245.44,2,No
+Alfa,Andy,,Week 43,1,Hours,Income,959.8,925.86,33.94,0.03665781,Improvement,2826.58,3,Yes
+Alfa,Andy,,Week 43,1,Holiday,Expense,-1216.0835,-1248.27,32.1865,0.025784886,Reducing Cost,-3186.6935,3,Yes
+Alfa,Andy,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Alfa,Andy,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Alfa,Andy,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Alfa,Andy,,Week 43,1,Margin,Income,3570.4032,3481.7,88.7032,0.02547698,Improvement,9815.8432,3,Yes
+Fiat,Andy,,Week 41,1,Hours,Income,666,0,0,,No Change,666,1,No
+Fiat,Andy,,Week 41,1,Holiday,Expense,-167.35,0,0,,No Change,-167.35,1,No
+Fiat,Andy,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Fiat,Andy,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Fiat,Andy,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Fiat,Andy,,Week 41,1,Margin,Income,2682.79,0,0,,No Change,2682.79,1,No
+Fiat,Andy,,Week 42,1,Hours,Income,560.5,666,-105.5,-0.158408408,Dropping,1226.5,2,No
+Fiat,Andy,,Week 42,1,Holiday,Expense,-942.6,-167.35,-775.25,-4.632506722,Increasing Cost,-1109.95,2,No
+Fiat,Andy,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Fiat,Andy,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Fiat,Andy,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Fiat,Andy,,Week 42,1,Margin,Income,2218.19,2682.79,-464.6,-0.173177923,Dropping,4900.98,2,No
+Fiat,Andy,,Week 43,1,Hours,Income,727.75,560.5,167.25,0.298394291,Improvement,1954.25,3,Yes
+Fiat,Andy,,Week 43,1,Holiday,Expense,-422.3814,-942.6,520.2186,0.551897518,Reducing Cost,-1532.3314,3,Yes
+Fiat,Andy,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Fiat,Andy,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Fiat,Andy,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Fiat,Andy,,Week 43,1,Margin,Income,2982.4433,2218.19,764.2533,0.344539151,Improvement,7883.4233,3,Yes
+BYD,Andy,,Week 41,1,Hours,Income,349,0,0,,No Change,349,1,No
+BYD,Andy,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+BYD,Andy,,Week 41,1,SSP,Expense,-122.71,0,0,,No Change,-122.71,1,No
+BYD,Andy,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+BYD,Andy,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+BYD,Andy,,Week 41,1,Margin,Income,1265.11,0,0,,No Change,1265.11,1,No
+BYD,Andy,,Week 42,1,Hours,Income,255,349,-94,-0.269340974,Dropping,604,2,No
+BYD,Andy,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+BYD,Andy,,Week 42,1,SSP,Expense,-95.48,-122.71,27.23,0.221905305,Reducing Cost,-218.19,2,No
+BYD,Andy,,Week 42,1,PENS,Expense,275.43,0,275.43,,Reducing Cost,275.43,2,No
+BYD,Andy,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+BYD,Andy,,Week 42,1,Margin,Income,909.06,1265.11,-356.05,-0.281437978,Dropping,2174.17,2,No
+BYD,Andy,,Week 43,1,Hours,Income,261.5,255,6.5,0.025490196,Improvement,865.5,3,Yes
+BYD,Andy,,Week 43,1,Holiday,Expense,-77.227,0,-77.227,,Increasing Cost,-77.227,3,Yes
+BYD,Andy,,Week 43,1,SSP,Expense,0,-95.48,95.48,1,Reducing Cost,-218.19,3,Yes
+BYD,Andy,,Week 43,1,PENS,Expense,221.1,275.43,-54.33,-0.197255201,Increasing Cost,496.53,3,Yes
+BYD,Andy,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+BYD,Andy,,Week 43,1,Margin,Income,908.8854,909.06,-0.1746,-0.000192067,Dropping,3083.0554,3,Yes
+Volvo,Kim,,Week 41,1,Hours,Income,1373,0,0,,No Change,1373,1,No
+Volvo,Kim,,Week 41,1,Holiday,Expense,-91.84,0,0,,No Change,-91.84,1,No
+Volvo,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Volvo,Kim,,Week 41,1,PENS,Expense,195.53,0,0,,No Change,195.53,1,No
+Volvo,Kim,,Week 41,1,SMP/SPP,Expense,-29.63,0,0,,No Change,-29.63,1,No
+Volvo,Kim,,Week 41,1,Margin,Income,4235.52,0,0,,No Change,4235.52,1,No
+Volvo,Kim,,Week 42,1,Hours,Income,1314.5,1373,-58.5,-0.042607429,Dropping,2687.5,2,No
+Volvo,Kim,,Week 42,1,Holiday,Expense,-1809.95,-91.84,-1718.11,-18.70764373,Increasing Cost,-1901.79,2,No
+Volvo,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Volvo,Kim,,Week 42,1,PENS,Expense,0,195.53,-195.53,-1,Increasing Cost,195.53,2,No
+Volvo,Kim,,Week 42,1,SMP/SPP,Expense,-29.63,-29.63,0,0,No Change,-59.26,2,No
+Volvo,Kim,,Week 42,1,Margin,Income,3979.1,4235.52,-256.42,-0.060540382,Dropping,8214.62,2,No
+Volvo,Kim,,Week 43,1,Hours,Income,1187.5,1314.5,-127,-0.096614682,Dropping,3875,3,Yes
+Volvo,Kim,,Week 43,1,Holiday,Expense,-558.9059,-1809.95,1251.0441,0.69120368,Reducing Cost,-2460.6959,3,Yes
+Volvo,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Volvo,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,195.53,3,Yes
+Volvo,Kim,,Week 43,1,SMP/SPP,Expense,-29.6259,-29.63,0.0041,0.000138373,Reducing Cost,-88.8859,3,Yes
+Volvo,Kim,,Week 43,1,Margin,Income,3585.9172,3979.1,-393.1828,-0.098811993,Dropping,11800.5372,3,Yes
+BMW,Duke,,Week 41,1,Hours,Income,64,0,0,,No Change,64,1,No
+BMW,Duke,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+BMW,Duke,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+BMW,Duke,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+BMW,Duke,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+BMW,Duke,,Week 41,1,Margin,Income,266.57,0,0,,No Change,266.57,1,No
+BMW,Duke,,Week 42,1,Hours,Income,40,64,-24,-0.375,Dropping,104,2,No
+BMW,Duke,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+BMW,Duke,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+BMW,Duke,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+BMW,Duke,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+BMW,Duke,,Week 42,1,Margin,Income,164.84,266.57,-101.73,-0.381625839,Dropping,431.41,2,No
+BMW,Duke,,Week 43,1,Hours,Income,40,40,0,0,No Change,144,3,Yes
+BMW,Duke,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+BMW,Duke,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+BMW,Duke,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+BMW,Duke,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+BMW,Duke,,Week 43,1,Margin,Income,164.838,164.84,-0.002,-1.2133E-05,Dropping,596.248,3,Yes
+Audi,Kim,,Week 41,1,Hours,Income,349,0,0,,No Change,349,1,No
+Audi,Kim,,Week 41,1,Holiday,Expense,-62.48,0,0,,No Change,-62.48,1,No
+Audi,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Audi,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Audi,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Audi,Kim,,Week 41,1,Margin,Income,1685.67,0,0,,No Change,1685.67,1,No
+Audi,Kim,,Week 42,1,Hours,Income,309,349,-40,-0.114613181,Dropping,658,2,No
+Audi,Kim,,Week 42,1,Holiday,Expense,0,-62.48,62.48,1,Reducing Cost,-62.48,2,No
+Audi,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Audi,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Audi,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Audi,Kim,,Week 42,1,Margin,Income,1475.21,1685.67,-210.46,-0.124852433,Dropping,3160.88,2,No
+Audi,Kim,,Week 43,1,Hours,Income,346,309,37,0.1197411,Improvement,1004,3,Yes
+Audi,Kim,,Week 43,1,Holiday,Expense,-86.4903,0,-86.4903,,Increasing Cost,-148.9703,3,Yes
+Audi,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Audi,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Audi,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Audi,Kim,,Week 43,1,Margin,Income,1673.6092,1475.21,198.3992,0.134488785,Improvement,4834.4892,3,Yes
+Skoda,Duke,,Week 41,1,Hours,Income,52,0,0,,No Change,52,1,No
+Skoda,Duke,,Week 41,1,Holiday,Expense,-102.4,0,0,,No Change,-102.4,1,No
+Skoda,Duke,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Skoda,Duke,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Skoda,Duke,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Skoda,Duke,,Week 41,1,Margin,Income,268.13,0,0,,No Change,268.13,1,No
+Skoda,Duke,,Week 42,1,Hours,Income,100.5,52,48.5,0.932692308,Improvement,152.5,2,No
+Skoda,Duke,,Week 42,1,Holiday,Expense,-52.44,-102.4,49.96,0.487890625,Reducing Cost,-154.84,2,No
+Skoda,Duke,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Skoda,Duke,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Skoda,Duke,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Skoda,Duke,,Week 42,1,Margin,Income,488.93,268.13,220.8,0.823481147,Improvement,757.06,2,No
+Skoda,Duke,,Week 43,1,Hours,Income,24,100.5,-76.5,-0.76119403,Dropping,176.5,3,Yes
+Skoda,Duke,,Week 43,1,Holiday,Expense,0,-52.44,52.44,1,Reducing Cost,-154.84,3,Yes
+Skoda,Duke,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Skoda,Duke,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Skoda,Duke,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Skoda,Duke,,Week 43,1,Margin,Income,126.1016,488.93,-362.8284,-0.742086597,Dropping,883.1616,3,Yes
+Toyota,Duke,,Week 41,1,Hours,Income,177.25,0,0,,No Change,177.25,1,No
+Toyota,Duke,,Week 41,1,Holiday,Expense,-203.88,0,0,,No Change,-203.88,1,No
+Toyota,Duke,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Toyota,Duke,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Toyota,Duke,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Toyota,Duke,,Week 41,1,Margin,Income,608.74,0,0,,No Change,608.74,1,No
+Toyota,Duke,,Week 42,1,Hours,Income,126.5,177.25,-50.75,-0.286318759,Dropping,303.75,2,No
+Toyota,Duke,,Week 42,1,Holiday,Expense,0,-203.88,203.88,1,Reducing Cost,-203.88,2,No
+Toyota,Duke,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Toyota,Duke,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Toyota,Duke,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Toyota,Duke,,Week 42,1,Margin,Income,450.03,608.74,-158.71,-0.260718862,Dropping,1058.77,2,No
+Toyota,Duke,,Week 43,1,Hours,Income,153.5,126.5,27,0.213438735,Improvement,457.25,3,Yes
+Toyota,Duke,,Week 43,1,Holiday,Expense,-484.0181,0,-484.0181,,Increasing Cost,-687.8981,3,Yes
+Toyota,Duke,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Toyota,Duke,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Toyota,Duke,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Toyota,Duke,,Week 43,1,Margin,Income,516.3265,450.03,66.2965,0.147315735,Improvement,1575.0965,3,Yes
+Volkswagen,Andy,,Week 41,1,Hours,Income,591.5,0,0,,No Change,591.5,1,No
+Volkswagen,Andy,,Week 41,1,Holiday,Expense,-316.36,0,0,,No Change,-316.36,1,No
+Volkswagen,Andy,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Volkswagen,Andy,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Volkswagen,Andy,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Volkswagen,Andy,,Week 41,1,Margin,Income,2578.39,0,0,,No Change,2578.39,1,No
+Volkswagen,Andy,,Week 42,1,Hours,Income,540,591.5,-51.5,-0.087066779,Dropping,1131.5,2,No
+Volkswagen,Andy,,Week 42,1,Holiday,Expense,-1117.66,-316.36,-801.3,-2.532873941,Increasing Cost,-1434.02,2,No
+Volkswagen,Andy,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Volkswagen,Andy,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Volkswagen,Andy,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Volkswagen,Andy,,Week 42,1,Margin,Income,2363.59,2578.39,-214.8,-0.083307801,Dropping,4941.98,2,No
+Volkswagen,Andy,,Week 43,1,Hours,Income,454.5,540,-85.5,-0.158333333,Dropping,1586,3,Yes
+Volkswagen,Andy,,Week 43,1,Holiday,Expense,-2281.0603,-1117.66,-1163.4003,-1.040925058,Increasing Cost,-3715.0803,3,Yes
+Volkswagen,Andy,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Volkswagen,Andy,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Volkswagen,Andy,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Volkswagen,Andy,,Week 43,1,Margin,Income,1974.7273,2363.59,-388.8627,-0.164522062,Dropping,6916.7073,3,Yes
+Ford,Kim,,Week 41,1,Hours,Income,121.5,0,0,,No Change,121.5,1,No
+Ford,Kim,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Ford,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Ford,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Ford,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Ford,Kim,,Week 41,1,Margin,Income,556.11,0,0,,No Change,556.11,1,No
+Ford,Kim,,Week 42,1,Hours,Income,100.5,121.5,-21,-0.172839506,Dropping,222,2,No
+Ford,Kim,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Ford,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Ford,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Ford,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Ford,Kim,,Week 42,1,Margin,Income,469.15,556.11,-86.96,-0.156371941,Dropping,1025.26,2,No
+Ford,Kim,,Week 43,1,Hours,Income,159.15,100.5,58.65,0.58358209,Improvement,381.15,3,Yes
+Ford,Kim,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Ford,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Ford,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Ford,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Ford,Kim,,Week 43,1,Margin,Income,711.5939,469.15,242.4439,0.516772674,Improvement,1736.8539,3,Yes
+Honda,Kim,,Week 41,1,Hours,Income,40,0,0,,No Change,40,1,No
+Honda,Kim,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Honda,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Honda,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Honda,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Honda,Kim,,Week 41,1,Margin,Income,155.89,0,0,,No Change,155.89,1,No
+Honda,Kim,,Week 42,1,Hours,Income,47,40,7,0.175,Improvement,87,2,No
+Honda,Kim,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Honda,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Honda,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Honda,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Honda,Kim,,Week 42,1,Margin,Income,188.76,155.89,32.87,0.210853807,Improvement,344.65,2,No
+Honda,Kim,,Week 43,1,Hours,Income,40,47,-7,-0.14893617,Dropping,127,3,Yes
+Honda,Kim,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Honda,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Honda,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Honda,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Honda,Kim,,Week 43,1,Margin,Income,155.888,188.76,-32.872,-0.174147065,Dropping,500.538,3,Yes
+Hyundai,Kim,,Week 41,1,Hours,Income,154,0,0,,No Change,154,1,No
+Hyundai,Kim,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Hyundai,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Hyundai,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Hyundai,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Hyundai,Kim,,Week 41,1,Margin,Income,697.74,0,0,,No Change,697.74,1,No
+Hyundai,Kim,,Week 42,1,Hours,Income,136,154,-18,-0.116883117,Dropping,290,2,No
+Hyundai,Kim,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Hyundai,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Hyundai,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Hyundai,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Hyundai,Kim,,Week 42,1,Margin,Income,605.51,697.74,-92.23,-0.132183908,Dropping,1303.25,2,No
+Hyundai,Kim,,Week 43,1,Hours,Income,128,136,-8,-0.058823529,Dropping,418,3,Yes
+Hyundai,Kim,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Hyundai,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Hyundai,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Hyundai,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Hyundai,Kim,,Week 43,1,Margin,Income,566.8612,605.51,-38.6488,-0.063828508,Dropping,1870.1112,3,Yes
+Mercedes-Benz,Shelby,,Week 41,1,Hours,Income,85,0,0,,No Change,85,1,No
+Mercedes-Benz,Shelby,,Week 41,1,Holiday,Expense,-159.18,0,0,,No Change,-159.18,1,No
+Mercedes-Benz,Shelby,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Mercedes-Benz,Shelby,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Mercedes-Benz,Shelby,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Mercedes-Benz,Shelby,,Week 41,1,Margin,Income,244.14,0,0,,No Change,244.14,1,No
+Mercedes-Benz,Shelby,,Week 42,1,Hours,Income,59.5,85,-25.5,-0.3,Dropping,144.5,2,No
+Mercedes-Benz,Shelby,,Week 42,1,Holiday,Expense,-539.17,-159.18,-379.99,-2.387171755,Increasing Cost,-698.35,2,No
+Mercedes-Benz,Shelby,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Mercedes-Benz,Shelby,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Mercedes-Benz,Shelby,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Mercedes-Benz,Shelby,,Week 42,1,Margin,Income,181.75,244.14,-62.39,-0.255550094,Dropping,425.89,2,No
+Mercedes-Benz,Shelby,,Week 43,1,Hours,Income,102.5,59.5,43,0.722689076,Improvement,247,3,Yes
+Mercedes-Benz,Shelby,,Week 43,1,Holiday,Expense,0,-539.17,539.17,1,Reducing Cost,-698.35,3,Yes
+Mercedes-Benz,Shelby,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Mercedes-Benz,Shelby,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Mercedes-Benz,Shelby,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Mercedes-Benz,Shelby,,Week 43,1,Margin,Income,291.2314,181.75,109.4814,0.60237359,Improvement,717.1214,3,Yes
+Nissan,Kim,,Week 41,1,Hours,Income,33.5,0,0,,No Change,33.5,1,No
+Nissan,Kim,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Nissan,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Nissan,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Nissan,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Nissan,Kim,,Week 41,1,Margin,Income,144.31,0,0,,No Change,144.31,1,No
+Nissan,Kim,,Week 42,1,Hours,Income,33.5,33.5,0,0,No Change,67,2,No
+Nissan,Kim,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Nissan,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Nissan,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Nissan,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Nissan,Kim,,Week 42,1,Margin,Income,144.31,144.31,0,0,No Change,288.62,2,No
+Nissan,Kim,,Week 43,1,Hours,Income,35.5,33.5,2,0.059701493,Improvement,102.5,3,Yes
+Nissan,Kim,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Nissan,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Nissan,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Nissan,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Nissan,Kim,,Week 43,1,Margin,Income,151.7781,144.31,7.4681,0.051750398,Improvement,440.3981,3,Yes
+Jaguar,Duke,,Week 41,1,Hours,Income,59.1,0,0,,No Change,59.1,1,No
+Jaguar,Duke,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Jaguar,Duke,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Jaguar,Duke,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Jaguar,Duke,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Jaguar,Duke,,Week 41,1,Margin,Income,195.76,0,0,,No Change,195.76,1,No
+Jaguar,Duke,,Week 42,1,Hours,Income,69.75,59.1,10.65,0.180203046,Improvement,128.85,2,No
+Jaguar,Duke,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Jaguar,Duke,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Jaguar,Duke,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Jaguar,Duke,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Jaguar,Duke,,Week 42,1,Margin,Income,233.06,195.76,37.3,0.190539436,Improvement,428.82,2,No
+Jaguar,Duke,,Week 43,1,Hours,Income,144.75,69.75,75,1.075268817,Improvement,273.6,3,Yes
+Jaguar,Duke,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Jaguar,Duke,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Jaguar,Duke,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Jaguar,Duke,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Jaguar,Duke,,Week 43,1,Margin,Income,453.3469,233.06,220.2869,0.945193941,Improvement,882.1669,3,Yes
+Peugeot,Andy,,Week 41,1,Hours,Income,36,0,0,,No Change,36,1,No
+Peugeot,Andy,,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Peugeot,Andy,,Week 41,1,SSP,Expense,-122.71,0,0,,No Change,-122.71,1,No
+Peugeot,Andy,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Peugeot,Andy,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Peugeot,Andy,,Week 41,1,Margin,Income,136.36,0,0,,No Change,136.36,1,No
+Peugeot,Andy,,Week 42,1,Hours,Income,36,36,0,0,No Change,72,2,No
+Peugeot,Andy,,Week 42,1,Holiday,Expense,0,0,0,,No Change,0,2,No
+Peugeot,Andy,,Week 42,1,SSP,Expense,-122.71,-122.71,0,0,No Change,-245.42,2,No
+Peugeot,Andy,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Peugeot,Andy,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Peugeot,Andy,,Week 42,1,Margin,Income,136.36,136.36,0,0,No Change,272.72,2,No
+Peugeot,Andy,,Week 43,1,Hours,Income,36,36,0,0,No Change,108,3,Yes
+Peugeot,Andy,,Week 43,1,Holiday,Expense,0,0,0,,No Change,0,3,Yes
+Peugeot,Andy,,Week 43,1,SSP,Expense,-122.7338,-122.71,-0.0238,-0.000193953,Increasing Cost,-368.1538,3,Yes
+Peugeot,Andy,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Peugeot,Andy,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Peugeot,Andy,,Week 43,1,Margin,Income,136.3622,136.36,0.0022,1.61338E-05,Improvement,409.0822,3,Yes
+Genesis,Ed,Yes,Week 41,1,Hours,Income,72,0,0,,No Change,72,1,No
+Genesis,Ed,Yes,Week 41,1,Holiday,Expense,0,0,0,,No Change,0,1,No
+Genesis,Ed,Yes,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Genesis,Ed,Yes,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Genesis,Ed,Yes,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Genesis,Ed,Yes,Week 41,1,Margin,Income,1476.72,0,0,,No Change,1476.72,1,No
+Lamborghini,Kim,,Week 41,1,Hours,Income,601,0,0,,No Change,601,1,No
+Lamborghini,Kim,,Week 41,1,Holiday,Expense,-1858.85,0,0,,No Change,-1858.85,1,No
+Lamborghini,Kim,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Lamborghini,Kim,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Lamborghini,Kim,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Lamborghini,Kim,,Week 41,1,Margin,Income,2132.8,0,0,,No Change,2132.8,1,No
+Lamborghini,Kim,,Week 42,1,Hours,Income,593.5,601,-7.5,-0.012479201,Dropping,1194.5,2,No
+Lamborghini,Kim,,Week 42,1,Holiday,Expense,-512.41,-1858.85,1346.44,0.724340318,Reducing Cost,-2371.26,2,No
+Lamborghini,Kim,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Lamborghini,Kim,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Lamborghini,Kim,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Lamborghini,Kim,,Week 42,1,Margin,Income,2135.66,2132.8,2.86,0.00134096,Improvement,4268.46,2,No
+Lamborghini,Kim,,Week 43,1,Hours,Income,601.5,593.5,8,0.01347936,Improvement,1796,3,Yes
+Lamborghini,Kim,,Week 43,1,Holiday,Expense,-1344.9762,-512.41,-832.5662,-1.624804746,Increasing Cost,-3716.2362,3,Yes
+Lamborghini,Kim,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Lamborghini,Kim,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Lamborghini,Kim,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Lamborghini,Kim,,Week 43,1,Margin,Income,2127.5724,2135.66,-8.0876,-0.003786932,Dropping,6396.0324,3,Yes
+Abarth,,,Week 41,1,Hours,Income,24,0,0,,No Change,24,1,No
+Abarth,,,Week 41,1,Holiday,Expense,-981.63,0,0,,No Change,-981.63,1,No
+Abarth,,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Abarth,,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Abarth,,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Abarth,,,Week 41,1,Margin,Income,51.93,0,0,,No Change,51.93,1,No
+Abarth,,,Week 42,1,Hours,Income,64,24,40,1.666666667,Improvement,88,2,No
+Abarth,,,Week 42,1,Holiday,Expense,-118.99,-981.63,862.64,0.878783248,Reducing Cost,-1100.62,2,No
+Abarth,,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Abarth,,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Abarth,,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Abarth,,,Week 42,1,Margin,Income,146.25,51.93,94.32,1.816291161,Improvement,198.18,2,No
+Abarth,,,Week 43,1,Hours,Income,75.5,64,11.5,0.1796875,Improvement,163.5,3,Yes
+Abarth,,,Week 43,1,Holiday,Expense,0,-118.99,118.99,1,Reducing Cost,-1100.62,3,Yes
+Abarth,,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Abarth,,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Abarth,,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Abarth,,,Week 43,1,Margin,Income,178.8885,146.25,32.6385,0.223169231,Improvement,377.0685,3,Yes
+Global,,,Week 41,1,Hours,Income,1335.2,0,0,,No Change,1335.2,1,No
+Global,,,Week 41,1,Holiday,Expense,-1259.44,0,0,,No Change,-1259.44,1,No
+Global,,,Week 41,1,SSP,Expense,0,0,0,,No Change,0,1,No
+Global,,,Week 41,1,PENS,Expense,0,0,0,,No Change,0,1,No
+Global,,,Week 41,1,SMP/SPP,Expense,0,0,0,,No Change,0,1,No
+Global,,,Week 41,1,Margin,Income,3188.2,0,0,,No Change,3188.2,1,No
+Global,,,Week 42,1,Hours,Income,1353.25,1335.2,18.05,0.013518574,Improvement,2688.45,2,No
+Global,,,Week 42,1,Holiday,Expense,-1432.97,-1259.44,-173.53,-0.137783459,Increasing Cost,-2692.41,2,No
+Global,,,Week 42,1,SSP,Expense,0,0,0,,No Change,0,2,No
+Global,,,Week 42,1,PENS,Expense,0,0,0,,No Change,0,2,No
+Global,,,Week 42,1,SMP/SPP,Expense,0,0,0,,No Change,0,2,No
+Global,,,Week 42,1,Margin,Income,3179.26,3188.2,-8.94,-0.00280409,Dropping,6367.46,2,No
+Global,,,Week 43,1,Hours,Income,1325.55,1353.25,-27.7,-0.020469241,Dropping,4014,3,Yes
+Global,,,Week 43,1,Holiday,Expense,-1245.4222,-1432.97,187.5478,0.130880479,Reducing Cost,-3937.8322,3,Yes
+Global,,,Week 43,1,SSP,Expense,0,0,0,,No Change,0,3,Yes
+Global,,,Week 43,1,PENS,Expense,0,0,0,,No Change,0,3,Yes
+Global,,,Week 43,1,SMP/SPP,Expense,0,0,0,,No Change,0,3,Yes
+Global,,,Week 43,1,Margin,Income,3090.7655,3179.26,-88.4945,-0.027834936,Dropping,9458.2255,3,Yes
