@@ -472,25 +472,18 @@ let sourceRows = [];
 let barChart, donutChart, costsChart, costConsultantChart, holidayChart, scatterChart;
 
 // ════════════════════════════════════════
-// HELPERS
+// HELPERS — formatting & parsing only
+// Row classification comes from CSV columns (Row_Category, Margin_Col, Cost_Col, Hours_Col)
 // ════════════════════════════════════════
 const getCI = (obj,...names) => {
   const keys = Object.keys(obj||{});
-  for(const n of names){
-    const k = keys.find(x=>x.toLowerCase()===n.toLowerCase());
-    if(k!==undefined) return obj[k];
-  }
+  for(const n of names){ const k=keys.find(x=>x.toLowerCase()===n.toLowerCase()); if(k!==undefined) return obj[k]; }
   return '';
 };
 const parseWeek = x => { const m=String(x??'').match(/(\d+)/); return m?Number(m[1]):0; };
 const toNum     = x => { const n=Number(String(x??'').replace(/[£,]/g,'').trim()); return isFinite(n)?n:0; };
 const fmtGBP    = n => '£'+Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc       = s => { const d=document.createElement('div'); d.textContent=String(s); return d.innerHTML; };
-
-// Use Cost_Type column directly — 'expense' = cost row, 'income' = margin/hours
-const isCostRow = r => String(r.costType||'').toLowerCase()==='expense';
-const isIncomeRow = r => String(r.costType||'').toLowerCase()==='income';
-const isHoursRow = r => r.metric.toLowerCase().includes('hour') || r.metric.toLowerCase().includes('hrs');
 
 const CHART_FONT = 'Plus Jakarta Sans';
 const TT = {
@@ -503,6 +496,12 @@ const Q_COLOR = {star:'#1db87a',boutique:'#4a90e2',drain:'#f0a830',risk:'#e84c4c
 
 // ════════════════════════════════════════
 // CSV UPLOAD
+// Reads pre-computed columns from Financial_extract_enhanced.csv:
+//   Row_Category  — 'Hours' | 'Cost' | 'Margin'
+//   Margin_Col    — gross margin value (0 for non-margin rows)
+//   Cost_Col      — cost value as positive abs (0 for non-cost rows)
+//   Hours_Col     — hours value (0 for non-hours rows)
+//   Net_Contribution — net value per row (margin rows positive, cost rows negative)
 // ════════════════════════════════════════
 document.getElementById('csvInput').addEventListener('change', e => {
   const file = e.target.files?.[0]; if(!file) return;
@@ -513,16 +512,20 @@ document.getElementById('csvInput').addEventListener('change', e => {
     complete:({errors,data}) => {
       if(errors?.length){ setError(errors[0].message||'CSV parse error'); return; }
       const rows = (Array.isArray(data)?data:[]).map(r=>({
-        client:     String(getCI(r,'client')).trim(),
-        consultant: String(getCI(r,'consultant')||'Unknown').trim()||'Unknown',
-        metric:     String(getCI(r,'metric')).trim(),
-        costType:   String(getCI(r,'cost_type','costtype')||'').trim(),
-        value:      toNum(getCI(r,'value')),
-        prevValue:  toNum(getCI(r,'prev_week_value','prev_value')),
-        wowTrend:   String(getCI(r,'wow_trend','wowtrend')||'').trim(),
-        week:       parseWeek(getCI(r,'week')),
-        month:      Number(getCI(r,'month_num','month'))||0,
-        isLatest:   String(getCI(r,'is_latest_week','islatestweek')||'').toLowerCase()==='yes',
+        client:      String(getCI(r,'client')).trim(),
+        consultant:  String(getCI(r,'consultant')||'Unknown').trim()||'Unknown',
+        metric:      String(getCI(r,'metric')).trim(),
+        value:       toNum(getCI(r,'value')),
+        week:        parseWeek(getCI(r,'week')),
+        month:       Number(getCI(r,'month_num','month'))||0,
+        wowTrend:    String(getCI(r,'wow_trend','wowtrend')||'').trim(),
+        isLatest:    String(getCI(r,'is_latest_week','islatestweek')||'').toLowerCase()==='yes',
+        // Pre-computed classification columns — used instead of JS row-type detection
+        rowCategory: String(getCI(r,'row_category')||'').trim(),
+        marginCol:   toNum(getCI(r,'margin_col')),
+        costCol:     toNum(getCI(r,'cost_col')),
+        hoursCol:    toNum(getCI(r,'hours_col')),
+        netContrib:  toNum(getCI(r,'net_contribution')),
       })).filter(x=>x.client&&x.metric);
       if(!rows.length){ setError('No usable rows found.'); return; }
       sourceRows = rows;
@@ -588,14 +591,16 @@ function renderAll(){
 
 // ════════════════════════════════════════
 // OVERVIEW — KPIs
+// Gross Margin = sum of Margin_Col (pre-computed in CSV)
+// Total Cost   = sum of Cost_Col   (pre-computed in CSV, already abs)
+// Net Profit   = Gross - Cost
+// Total Spend  = sum of positive non-hours values
 // ════════════════════════════════════════
 function renderKPIs(rows){
-  const incomeRows = rows.filter(r=>isIncomeRow(r)&&!isHoursRow(r));
-  const grossMargin = incomeRows.filter(r=>r.metric.toLowerCase().includes('margin')).reduce((s,r)=>s+r.value,0)
-    || incomeRows.reduce((s,r)=>s+r.value,0);
-  const totalCost = rows.filter(r=>isCostRow(r)).reduce((s,r)=>s+Math.abs(r.value),0);
-  const netProfit = grossMargin - totalCost;
-  const totalSpend = rows.filter(r=>r.value>0&&!isHoursRow(r)).reduce((s,r)=>s+r.value,0);
+  const grossMargin = rows.reduce((s,r)=>s+r.marginCol, 0);
+  const totalCost   = rows.reduce((s,r)=>s+r.costCol, 0);
+  const netProfit   = grossMargin - totalCost;
+  const totalSpend  = rows.filter(r=>r.rowCategory!=='Hours').reduce((s,r)=>s+Math.max(0,r.value), 0);
   document.getElementById('kpiGross').textContent     = fmtGBP(grossMargin);
   document.getElementById('kpiTotalCost').textContent = fmtGBP(totalCost);
   document.getElementById('kpiNet').textContent       = fmtGBP(netProfit);
@@ -604,20 +609,19 @@ function renderKPIs(rows){
 
 // ════════════════════════════════════════
 // OVERVIEW — WEEKLY TREND
+// Uses Margin_Col to identify margin rows and get values
 // ════════════════════════════════════════
 function renderBarChart(rows){
-  const marginRows = rows.filter(r=>isIncomeRow(r)&&r.metric.toLowerCase().includes('margin'));
-  if(!marginRows.length){
-    show('barEmpty',true); show('barChartWrap',false); return;
-  }
+  const marginRows = rows.filter(r=>r.marginCol>0);
+  if(!marginRows.length){ show('barEmpty',true); show('barChartWrap',false); return; }
   const clientTotals={};
-  marginRows.forEach(r=>{ clientTotals[r.client]=(clientTotals[r.client]||0)+r.value; });
+  marginRows.forEach(r=>{ clientTotals[r.client]=(clientTotals[r.client]||0)+r.marginCol; });
   const top5=Object.entries(clientTotals).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]);
   const weeks=[...new Set(marginRows.map(r=>r.week).filter(Boolean))].sort((a,b)=>a-b);
   const WK_COLORS=['#5b8dee','#7aa8f5','#9dc3f7','#bcd6f9','#d9ebfc'];
   const datasets=weeks.map((w,i)=>({
     label:`Week ${w}`,
-    data:top5.map(c=>marginRows.filter(r=>r.client===c&&r.week===w).reduce((s,r)=>s+r.value,0)),
+    data:top5.map(c=>marginRows.filter(r=>r.client===c&&r.week===w).reduce((s,r)=>s+r.marginCol,0)),
     backgroundColor:WK_COLORS[i%WK_COLORS.length],borderRadius:3,borderSkipped:false,
   }));
   show('barEmpty',false); show('barChartWrap',true);
@@ -633,13 +637,13 @@ function renderBarChart(rows){
 
 // ════════════════════════════════════════
 // OVERVIEW — CONSULTANT DONUT
+// Uses Margin_Col per consultant
 // ════════════════════════════════════════
 function renderDonut(rows){
-  const marginRows=rows.filter(r=>isIncomeRow(r)&&r.metric.toLowerCase().includes('margin'));
-  if(!marginRows.length){ show('donutEmpty',true); show('donutWrap',false); return; }
   const conMap={};
-  marginRows.forEach(r=>{ conMap[r.consultant]=(conMap[r.consultant]||0)+r.value; });
+  rows.forEach(r=>{ if(r.marginCol>0) conMap[r.consultant]=(conMap[r.consultant]||0)+r.marginCol; });
   const segs=Object.entries(conMap).sort((a,b)=>b[1]-a[1]);
+  if(!segs.length){ show('donutEmpty',true); show('donutWrap',false); return; }
   show('donutEmpty',false); show('donutWrap',true);
   const COLORS=['#4a90e2','#2ecc8f','#f0a830','#e84c4c','#a855f7','#22d3ee','#fb923c','#34d399'];
   const labels=segs.map(x=>x[0]), values=segs.map(x=>x[1]);
@@ -658,13 +662,14 @@ function renderDonut(rows){
 
 // ════════════════════════════════════════
 // OVERVIEW — GROSS VS COST
+// Uses Margin_Col and Cost_Col directly — no row-type detection needed
 // ════════════════════════════════════════
 function renderCostsChart(rows){
   const cMap={};
-  rows.filter(r=>!isHoursRow(r)).forEach(r=>{
+  rows.forEach(r=>{
     if(!cMap[r.client]) cMap[r.client]={gross:0,cost:0};
-    if(isCostRow(r)) cMap[r.client].cost+=Math.abs(r.value);
-    else if(isIncomeRow(r)&&r.metric.toLowerCase().includes('margin')) cMap[r.client].gross+=r.value;
+    cMap[r.client].gross += r.marginCol;
+    cMap[r.client].cost  += r.costCol;
   });
   const top8=Object.entries(cMap).sort((a,b)=>(b[1].gross+b[1].cost)-(a[1].gross+a[1].cost)).slice(0,8);
   if(!top8.length){ show('costsEmpty',true); show('costsChartWrap',false); return; }
@@ -687,14 +692,14 @@ function renderCostsChart(rows){
 
 // ════════════════════════════════════════
 // OVERVIEW — COST BY CONSULTANT
+// Uses Cost_Col directly
 // ════════════════════════════════════════
 function renderCostConsultantChart(rows){
-  const costRows=rows.filter(r=>isCostRow(r));
-  if(!costRows.length){ show('costConsultantEmpty',true); show('costConsultantWrap',false); return; }
-  show('costConsultantEmpty',false); show('costConsultantWrap',true);
   const conCosts={};
-  costRows.forEach(r=>{ conCosts[r.consultant]=(conCosts[r.consultant]||0)+Math.abs(r.value); });
+  rows.forEach(r=>{ if(r.costCol>0) conCosts[r.consultant]=(conCosts[r.consultant]||0)+r.costCol; });
   const sorted=Object.entries(conCosts).sort((a,b)=>b[1]-a[1]);
+  if(!sorted.length){ show('costConsultantEmpty',true); show('costConsultantWrap',false); return; }
+  show('costConsultantEmpty',false); show('costConsultantWrap',true);
   const COLORS=['#4a90e2','#2ecc8f','#f0a830','#e84c4c','#a855f7','#22d3ee','#fb923c','#34d399'];
   const colors=COLORS.slice(0,sorted.length);
   const total=sorted.reduce((s,[,v])=>s+v,0);
@@ -715,16 +720,17 @@ function renderCostConsultantChart(rows){
 }
 
 // ════════════════════════════════════════
-// OVERVIEW — COST BREAKDOWN BY CLIENT (stacked metrics)
+// OVERVIEW — COST BREAKDOWN BY CLIENT
+// Uses Cost_Col per metric per client
 // ════════════════════════════════════════
 function renderHolidayChart(rows){
-  const costRows=rows.filter(r=>isCostRow(r));
+  const costRows=rows.filter(r=>r.costCol>0);
   if(!costRows.length){ show('holidayEmpty',true); show('holidayChartWrap',false); return; }
   show('holidayEmpty',false); show('holidayChartWrap',true);
   const clientMetricMap={};
   costRows.forEach(r=>{
     if(!clientMetricMap[r.client]) clientMetricMap[r.client]={};
-    clientMetricMap[r.client][r.metric]=(clientMetricMap[r.client][r.metric]||0)+Math.abs(r.value);
+    clientMetricMap[r.client][r.metric]=(clientMetricMap[r.client][r.metric]||0)+r.costCol;
   });
   const top10=Object.entries(clientMetricMap).map(([c,m])=>[c,Object.values(m).reduce((s,v)=>s+v,0)])
     .sort((a,b)=>b[1]-a[1]).slice(0,10).map(x=>x[0]);
@@ -748,33 +754,31 @@ function renderHolidayChart(rows){
 
 // ════════════════════════════════════════
 // OVERVIEW — CLIENT TABLE
-// Uses WoW_Trend directly from CSV
+// Aggregates per client using pre-computed columns:
+//   margin = sum Margin_Col, cost = sum Cost_Col
+//   hours  = sum Hours_Col,  net  = sum Net_Contribution
+// marginPerHour = net/hours (post-filter, must stay in JS)
 // ════════════════════════════════════════
 function renderTable(rows){
   if(!rows.length){ show('tableEmpty',true); show('tableWrap',false); return; }
   show('tableEmpty',false); show('tableWrap',true);
-
-  // Build client map — use Cost_Type to separate margin vs costs
   const cMap={};
   rows.forEach(r=>{
-    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,margin:0,cost:0,hours:0,wowTrend:''};
+    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,margin:0,cost:0,hours:0,net:0,wowTrend:''};
     const c=cMap[r.client];
-    if(isHoursRow(r)) { c.hours+=Math.abs(r.value); }
-    else if(isCostRow(r)) { c.cost+=Math.abs(r.value); }
-    else if(isIncomeRow(r)&&r.metric.toLowerCase().includes('margin')) { c.margin+=r.value; }
-    // Capture latest WoW trend for margin rows
-    if(r.metric.toLowerCase().includes('margin')&&r.wowTrend) c.wowTrend=r.wowTrend;
+    c.margin += r.marginCol;
+    c.cost   += r.costCol;
+    c.hours  += r.hoursCol;
+    c.net    += r.netContrib;
+    if(r.marginCol>0&&r.wowTrend) c.wowTrend=r.wowTrend;
   });
-
   const sorted=Object.entries(cMap).sort((a,b)=>b[1].margin-a[1].margin);
-
   document.getElementById('clientTableBody').innerHTML=sorted.map(([client,d])=>{
-    const marginHr=d.hours>0?d.margin/d.hours:0;
+    const marginHr=d.hours>0?d.net/d.hours:0;
     const mhClass=marginHr>=4?'high':marginHr>=3?'mid':'low';
     const mhDisplay=marginHr>0?`<span class="td-margin-hr ${mhClass}">£${marginHr.toFixed(2)}/hr</span>`:`<span class="td-margin-hr mid">—</span>`;
     const costsHtml=d.cost>0?`<span class="td-erosion">-${fmtGBP(d.cost)}</span>`:`<span class="td-erosion zero">—</span>`;
-
-    // Map WoW_Trend from CSV to badge
+    // WoW trend badge — string from CSV mapped to display HTML
     const t=d.wowTrend.toLowerCase();
     let wowHtml;
     if(t.includes('improvement'))      wowHtml=`<span class="wow-badge improvement">↗ Improving</span>`;
@@ -782,7 +786,6 @@ function renderTable(rows){
     else if(t.includes('increasing'))  wowHtml=`<span class="wow-badge increasing">↑ Increasing Cost</span>`;
     else if(t.includes('reducing'))    wowHtml=`<span class="wow-badge improvement">↘ Reducing Cost</span>`;
     else                               wowHtml=`<span class="wow-badge neutral">— No Change</span>`;
-
     return `<tr>
       <td><div class="td-client-name">${esc(client)}</div><div class="td-owner">${esc(d.consultant)}</div></td>
       <td><span class="td-margin">${fmtGBP(d.margin)}</span></td>
@@ -795,24 +798,23 @@ function renderTable(rows){
 
 // ════════════════════════════════════════
 // YIELD DESK PAGE
+// Per-client: sums Hours_Col, Margin_Col, Cost_Col, Net_Contribution from CSV
+// marginPerHour and quadrant classification remain in JS (filter-dependent averages)
 // ════════════════════════════════════════
 function renderYieldPage(rows){
-  // Build per-client: hours (from Hours/Income rows), margin (Margin/Income), costs (Expense)
   const cMap={};
   rows.forEach(r=>{
-    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,hours:0,margin:0,cost:0};
+    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,hours:0,margin:0,cost:0,net:0};
     const c=cMap[r.client];
-    if(isHoursRow(r)&&isIncomeRow(r))  c.hours+=r.value;
-    else if(isCostRow(r))              c.cost+=Math.abs(r.value);
-    else if(isIncomeRow(r)&&r.metric.toLowerCase().includes('margin')) c.margin+=r.value;
+    c.hours  += r.hoursCol;
+    c.margin += r.marginCol;
+    c.cost   += r.costCol;
+    c.net    += r.netContrib;
   });
-
-  const clients=Object.entries(cMap).map(([name,d])=>{
-    const net=d.margin-d.cost;
-    return{name,consultant:d.consultant,hours:d.hours,margin:d.margin,cost:d.cost,net,
-      marginPerHour:d.hours>0?net/d.hours:0};
-  });
-
+  const clients=Object.entries(cMap).map(([name,d])=>({
+    name,consultant:d.consultant,hours:d.hours,margin:d.margin,cost:d.cost,net:d.net,
+    marginPerHour:d.hours>0?d.net/d.hours:0,
+  }));
   const hasHours=clients.some(c=>c.hours>0);
   if(!hasHours||!clients.length){
     show('scatterEmpty',true); show('chartScatterWrap',false);
@@ -821,12 +823,11 @@ function renderYieldPage(rows){
     ['kpiYieldAvg','kpiStars','kpiRiskCount','kpiDrains'].forEach(id=>document.getElementById(id).textContent='—');
     return;
   }
-
   const totalNet=clients.reduce((s,c)=>s+c.net,0);
   const totalHours=clients.reduce((s,c)=>s+c.hours,0);
   const avgYield=totalHours>0?totalNet/totalHours:0;
   const avgHours=clients.length?totalHours/clients.length:0;
-
+  // Quadrant: relative to filtered averages — must stay in JS
   const getQ=c=>{
     if(c.marginPerHour>=avgYield&&c.hours>=avgHours) return 'star';
     if(c.marginPerHour<avgYield&&c.hours>=avgHours)  return 'risk';
@@ -834,22 +835,17 @@ function renderYieldPage(rows){
     return 'drain';
   };
   const withQ=clients.map(c=>({...c,quadrant:getQ(c)}));
-
   const stars=withQ.filter(c=>c.quadrant==='star').length;
   const risks=withQ.filter(c=>c.quadrant==='risk').length;
   const drains=withQ.filter(c=>c.quadrant==='drain').length;
-
   document.getElementById('kpiYieldAvg').textContent = avgYield>0?`£${avgYield.toFixed(2)}`:'—';
   document.getElementById('kpiStars').textContent    = stars;
   document.getElementById('kpiRiskCount').textContent= risks;
   document.getElementById('kpiDrains').textContent   = drains;
   document.getElementById('yieldBadgeRisk').textContent = risks>0?`${risks} at risk`:'';
-
-  // Scatter chart
   show('scatterEmpty',false); show('chartScatterWrap',true);
   document.getElementById('quadrantLegend').style.display='flex';
   if(scatterChart) scatterChart.destroy();
-
   scatterChart=new Chart(document.getElementById('chartScatter'),{
     type:'scatter',
     data:{datasets:[{
@@ -871,8 +867,6 @@ function renderYieldPage(rows){
       }
     }
   });
-
-  // Draw reference lines after render
   const refPlugin={
     id:'refLines',
     afterDraw(chart){
@@ -888,8 +882,6 @@ function renderYieldPage(rows){
   };
   if(!Chart.registry.plugins.get('refLines')) Chart.register(refPlugin);
   scatterChart.update();
-
-  // Yield rank list
   show('yieldRankEmpty',false); show('yieldRankList',true);
   const sorted=[...withQ].sort((a,b)=>b.marginPerHour-a.marginPerHour);
   document.getElementById('yieldRankList').innerHTML=sorted.map(c=>`
@@ -910,7 +902,8 @@ function renderYieldPage(rows){
 
 // ════════════════════════════════════════
 // RISK ANALYSIS PAGE
-// Uses WoW_Trend column + Cost_Type
+// WoW_Trend comes directly from CSV column
+// costImpact = cost/margin (post-filter, stays in JS)
 // ════════════════════════════════════════
 function renderRiskPage(rows){
   if(!rows.length){
@@ -921,40 +914,31 @@ function renderRiskPage(rows){
     document.getElementById('riskCostGrid').innerHTML='<div class="risk-empty">Upload a CSV to see risk analysis.</div>';
     return;
   }
-
-  // Aggregate per client — only using latest week for trend signals
   const cMap={};
   rows.forEach(r=>{
-    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,margin:0,cost:0,hours:0,wowTrends:[]};
+    if(!cMap[r.client]) cMap[r.client]={consultant:r.consultant,margin:0,cost:0,hours:0,net:0,wowTrends:[]};
     const c=cMap[r.client];
-    if(isHoursRow(r))   c.hours+=Math.abs(r.value);
-    else if(isCostRow(r)) c.cost+=Math.abs(r.value);
-    else if(isIncomeRow(r)&&r.metric.toLowerCase().includes('margin')){
-      c.margin+=r.value;
-      if(r.wowTrend) c.wowTrends.push(r.wowTrend.toLowerCase());
-    }
+    c.margin += r.marginCol;
+    c.cost   += r.costCol;
+    c.hours  += r.hoursCol;
+    c.net    += r.netContrib;
+    if(r.marginCol>0&&r.wowTrend) c.wowTrends.push(r.wowTrend.toLowerCase());
   });
-
   const clientList=Object.entries(cMap).map(([name,d])=>{
-    const net=d.margin-d.cost;
     const costImpact=d.margin>0?(d.cost/d.margin)*100:0;
-    // Dropping = any margin row has Dropping trend in WoW_Trend
     const isDropping=d.wowTrends.some(t=>t.includes('dropping'));
-    return{name,consultant:d.consultant,margin:d.margin,cost:d.cost,net,hours:d.hours,costImpact,isDropping};
+    return{name,consultant:d.consultant,margin:d.margin,cost:d.cost,net:d.net,hours:d.hours,costImpact,isDropping};
   });
-
   const dropping=clientList.filter(c=>c.isDropping);
   const highCost=clientList.filter(c=>c.costImpact>50&&c.margin>0);
   const flaggedSet=new Set([...dropping.map(c=>c.name),...highCost.map(c=>c.name)]);
   const clean=clientList.filter(c=>!flaggedSet.has(c.name)).length;
-
   document.getElementById('riskTotalFlagged').textContent = flaggedSet.size;
   document.getElementById('riskDropCount').textContent    = dropping.length;
   document.getElementById('riskHighCostCount').textContent= highCost.length;
   document.getElementById('riskCleanCount').textContent   = clean;
   document.getElementById('riskDropBadge').textContent    = dropping.length;
   document.getElementById('riskCostBadge').textContent    = highCost.length;
-
   const riskCard=(c,flags,isAmber=false)=>`
     <div class="risk-card ${isAmber?'amber-card':''}">
       <div class="risk-card-name">${esc(c.name)}</div>
@@ -967,13 +951,11 @@ function renderRiskPage(rows){
         <div><div class="rm-label">Total Cost</div><div class="rm-val">${fmtGBP(c.cost)}</div></div>
       </div>
     </div>`;
-
   document.getElementById('riskDropGrid').innerHTML=dropping.length
     ?dropping.sort((a,b)=>b.cost-a.cost).map(c=>riskCard(c,
         `<span class="rflag red">↓ Dropping</span>${c.costImpact>50?'<span class="rflag amber">High Cost</span>':''}`
       )).join('')
     :'<div class="risk-empty">✅ No dropping trend accounts detected.</div>';
-
   document.getElementById('riskCostGrid').innerHTML=highCost.length
     ?highCost.sort((a,b)=>b.costImpact-a.costImpact).map(c=>riskCard(c,
         `<span class="rflag amber">${c.costImpact.toFixed(0)}% cost impact</span>${c.isDropping?'<span class="rflag red">Also Dropping</span>':''}`,true
